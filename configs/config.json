@@ -1,0 +1,10 @@
+{
+  "database": {
+    "host": "localhost",
+    "user": "book_admin",
+    "password": "book_password",
+    "dbname": "books_db",
+    "port": 5432,
+    "sslmode": "disable"
+  }
+}

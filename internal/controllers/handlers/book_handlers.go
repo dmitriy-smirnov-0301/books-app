@@ -6,25 +6,27 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type BookHandlers struct {
-	Repo domain.BookRepository
+	repo domain.BookRepository
 }
 
 func NewBookHandlers(repo domain.BookRepository) *BookHandlers {
-	return &BookHandlers{Repo: repo}
+	return &BookHandlers{
+		repo: repo,
+	}
 }
 
-func (bh *BookHandlers) CreateBook(ctx echo.Context) error {
+func (h *BookHandlers) CreateBook(ctx echo.Context) error {
 
 	var book domain.Book
 	if err := ctx.Bind(&book); err != nil {
 		return ctx.JSON(http.StatusBadRequest, pkg.Response[pkg.ErrInvalidRequest])
 	}
 
-	newBook, err := bh.Repo.CreateBook(&book)
+	newBook, err := h.repo.CreateBook(&book)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -33,9 +35,9 @@ func (bh *BookHandlers) CreateBook(ctx echo.Context) error {
 
 }
 
-func (bh *BookHandlers) ReadBooks(ctx echo.Context) error {
+func (h *BookHandlers) ReadBooks(ctx echo.Context) error {
 
-	books, err := bh.Repo.ReadBooks()
+	books, err := h.repo.ReadBooks()
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -44,14 +46,14 @@ func (bh *BookHandlers) ReadBooks(ctx echo.Context) error {
 
 }
 
-func (bh *BookHandlers) ReadBook(ctx echo.Context) error {
+func (h *BookHandlers) ReadBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, pkg.Response[pkg.ErrInvalidID])
 	}
 
-	book, err := bh.Repo.ReadBook(id)
+	book, err := h.repo.ReadBook(uint(id))
 	if err != nil {
 		return ctx.JSON(http.StatusNotFound, pkg.Response[pkg.ErrNotFound])
 	}
@@ -60,7 +62,7 @@ func (bh *BookHandlers) ReadBook(ctx echo.Context) error {
 
 }
 
-func (bh *BookHandlers) UpdateBook(ctx echo.Context) error {
+func (h *BookHandlers) UpdateBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -72,7 +74,7 @@ func (bh *BookHandlers) UpdateBook(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, pkg.Response[pkg.ErrInvalidRequest])
 	}
 
-	updatedBook, err := bh.Repo.UpdateBook(id, &book)
+	updatedBook, err := h.repo.UpdateBook(uint(id), &book)
 	if err != nil {
 		return ctx.JSON(http.StatusNotFound, pkg.Response[pkg.ErrNotFound])
 	}
@@ -81,14 +83,14 @@ func (bh *BookHandlers) UpdateBook(ctx echo.Context) error {
 
 }
 
-func (bh *BookHandlers) DeleteBook(ctx echo.Context) error {
+func (h *BookHandlers) DeleteBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, pkg.Response[pkg.ErrInvalidID])
 	}
 
-	if err := bh.Repo.DeleteBook(id); err != nil {
+	if err := h.repo.DeleteBook(uint(id)); err != nil {
 		return ctx.JSON(http.StatusNotFound, pkg.Response[pkg.ErrNotFound])
 	}
 
