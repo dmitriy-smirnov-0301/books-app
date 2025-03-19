@@ -19,6 +19,17 @@ func NewBookHandlers(repo domain.BookRepository) *BookHandlers {
 	}
 }
 
+// CreateBook добавляет новую книгу
+// @Summary Добавить книгу
+// @Description Добавляет новую книгу в базу данных
+// @Tags books
+// @Accept  json
+// @Produce  json
+// @Param book body domain.Book true "Данные книги"
+// @Success 201 {object} domain.Book
+// @Failure 400 {object} map[string]string "Invalid request payload"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /books [post]
 func (h *BookHandlers) CreateBook(ctx echo.Context) error {
 
 	var book domain.Book
@@ -35,6 +46,14 @@ func (h *BookHandlers) CreateBook(ctx echo.Context) error {
 
 }
 
+// ReadBooks возвращает список всех книг
+// @Summary Получить список книг
+// @Description Возвращает все книги из базы данных
+// @Tags books
+// @Produce json
+// @Success 200 {array} domain.Book
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /books [get]
 func (h *BookHandlers) ReadBooks(ctx echo.Context) error {
 
 	books, err := h.repo.ReadBooks()
@@ -46,6 +65,16 @@ func (h *BookHandlers) ReadBooks(ctx echo.Context) error {
 
 }
 
+// ReadBook возвращает книгу по ID
+// @Summary Получить книгу
+// @Description Возвращает книгу по её ID
+// @Tags books
+// @Produce json
+// @Param id path int true "ID книги"
+// @Success 200 {object} domain.Book
+// @Failure 400 {object} map[string]string "Invalid book ID"
+// @Failure 404 {object} map[string]string "Book not found"
+// @Router /books/{id} [get]
 func (h *BookHandlers) ReadBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))
@@ -62,6 +91,18 @@ func (h *BookHandlers) ReadBook(ctx echo.Context) error {
 
 }
 
+// UpdateBook обновляет книгу по ID
+// @Summary Обновить книгу
+// @Description Обновляет информацию о книге в базе данных по её ID
+// @Tags books
+// @Accept json
+// @Produce json
+// @Param id path int true "ID книги"
+// @Param book body domain.Book true "Обновлённые данные книги"
+// @Success 200 {object} domain.Book
+// @Failure 400 {object} map[string]string "Invalid book ID or request payload"
+// @Failure 404 {object} map[string]string "Book not found"
+// @Router /books/{id} [put]
 func (h *BookHandlers) UpdateBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))
@@ -83,6 +124,16 @@ func (h *BookHandlers) UpdateBook(ctx echo.Context) error {
 
 }
 
+// DeleteBook удаляет книгу по ID
+// @Summary Удалить книгу
+// @Description Удаляет книгу из базы данных по её ID
+// @Tags books
+// @Produce json
+// @Param id path int true "ID книги"
+// @Success 204 "Book deleted successfully"
+// @Failure 400 {object} map[string]string "Invalid book ID"
+// @Failure 404 {object} map[string]string "Book not found"
+// @Router /books/{id} [delete]
 func (h *BookHandlers) DeleteBook(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(ctx.Param("id"))

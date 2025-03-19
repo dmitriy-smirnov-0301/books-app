@@ -1,0 +1,172 @@
+basePath: /
+definitions:
+  domain.Book:
+    properties:
+      author:
+        type: string
+      id:
+        type: integer
+      publication_year:
+        type: integer
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API для управления библиотекой книг
+  title: Books API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      description: Возвращает все книги из базы данных
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Book'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить список книг
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую книгу в базу данных
+      parameters:
+      - description: Данные книги
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Book'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Book'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Добавить книгу
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Удаляет книгу из базы данных по её ID
+      parameters:
+      - description: ID книги
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Book deleted successfully
+        "400":
+          description: Invalid book ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Book not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удалить книгу
+      tags:
+      - books
+    get:
+      description: Возвращает книгу по её ID
+      parameters:
+      - description: ID книги
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+        "400":
+          description: Invalid book ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Book not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить книгу
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о книге в базе данных по её ID
+      parameters:
+      - description: ID книги
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновлённые данные книги
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Book'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+        "400":
+          description: Invalid book ID or request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Book not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновить книгу
+      tags:
+      - books
+swagger: "2.0"

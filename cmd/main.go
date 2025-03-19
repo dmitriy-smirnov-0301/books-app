@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "books-app/docs"
 	"books-app/internal/controllers/handlers"
 	"books-app/internal/controllers/router"
 	"books-app/internal/db"
@@ -8,8 +9,14 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
+// @title Books API
+// @version 1.0
+// @description API для управления библиотекой книг
+// @host localhost:8080
+// @BasePath /
 func main() {
 
 	database := db.NewDatabase()
@@ -26,6 +33,8 @@ func main() {
 	handlers := handlers.NewBookHandlers(repository)
 
 	router.RegisterRoutes(e, handlers)
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.Logger.Fatal(e.Start(":8080"))
 
